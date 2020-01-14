@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-animal',
@@ -11,12 +11,14 @@ export class AnimalComponent implements OnInit {
   @Input() image: string;
   @Input() stamina: number;
   @Input() staminaDecay: number;
+  @Output() feint = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
     this.staminaDrop();
   }
+
 
   onFeed() {
     this.stamina = this.stamina + 1;
@@ -27,10 +29,13 @@ export class AnimalComponent implements OnInit {
     internalId = setInterval(() => {
       if(this.stamina > 0) {
         this.stamina = this.stamina - 10
-      } else{
-        clearInterval(internalId);
+      if(this.stamina == 0) {
+          clearInterval(internalId);
+          this.feint.emit(this.name);
+          console.log('animal feinted');
+        }
       }
-    },this.staminaDecay);    
+    }, this.staminaDecay);    
   }
 
 }
